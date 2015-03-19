@@ -66,7 +66,9 @@ def set_id3_tag(track_data, output):
 
 	mp3file.tag.artist = track_data['track_artist']
 	mp3file.tag.title = track_data['track_title']
-	mp3file.tag.album = track_data['playlist_title']
+
+	if 'playlist_title' in track_data:
+		mp3file.tag.album = track_data['playlist_title']
 
 	mp3file.tag.genre = track_data['genre']
 	mp3file.tag.release_date = track_data['release_date']
@@ -88,7 +90,10 @@ def get_track_metadata(json_data):
 	metadata['track_id'] = json_data['id']
 	metadata['track_title'] = json_data['title']
 	metadata['track_artist'] = json_data['user']['username']
-	metadata['playlist_title'] = json_data['playlist_title'] if 'playlist_title' in json_data else ''
+
+	if 'playlist_title' in json_data:
+			metadata['playlist_title'] = json_data['playlist_title']
+
 	metadata['genre'] = json_data['genre']
 
 	date = json_data['created_at'].split('/')
@@ -141,15 +146,15 @@ def download(track_data, output=None):
 	sys.stdout.write('\n')
 	sys.stdout.flush()
 
-	null_fds = [os.open(os.devnull, os.O_RDWR) for x in xrange(2)]  # Don't want to print eyed3 warnings
-	save = os.dup(2)
-	os.dup2(null_fds[1], 2)
+	#null_fds = [os.open(os.devnull, os.O_RDWR) for x in xrange(2)]  # Don't want to print eyed3 warnings
+	#save = os.dup(2)
+	#os.dup2(null_fds[1], 2)
 
 	set_id3_tag(track_data, output)
 
-	os.dup2(save, 2)
-	os.close(null_fds[0])
-	os.close(null_fds[1])
+	#os.dup2(save, 2)
+	#os.close(null_fds[0])
+	#os.close(null_fds[1])
 
 
 def download_track(url, json_data, output=None):
